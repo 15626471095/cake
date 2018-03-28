@@ -11,5 +11,7 @@
     <dimen name="column_height">50dp</dimen>
     <dimen name="column_height_2">100dp</dimen>
 
+    <dimen name="item_margin">20dp</dimen>
+
     <dimen name="font_size_1">14sp</dimen>
 </resources>

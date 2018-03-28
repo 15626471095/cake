@@ -21,6 +21,8 @@ public class OrderAdapter extends ArrayAdapter {
 
     private MainActivity mainActivity;
     private final int resourceId;
+
+    private List<Order> orderList;
     private Map<Integer, Order> orderMap = new HashMap<>();
 
 
@@ -28,7 +30,18 @@ public class OrderAdapter extends ArrayAdapter {
         super(mainActivity, resourceId, orderList);
         this.mainActivity = mainActivity;
         this.resourceId = resourceId;
+        this.orderList = orderList;
         orderList.forEach(o -> orderMap.put(o.getId(), o));
+    }
+
+    private void addOrUpdateOrder(Order order) {
+        if (orderMap.containsKey(order.getId())) {
+            orderMap.get(order.getId()).valueOf(order);
+        } else {
+            orderList.add(order);
+            orderMap.put(order.getId(), order);
+        }
+        assert orderMap.size() == orderList.size();
     }
 
     @NonNull
@@ -36,23 +49,23 @@ public class OrderAdapter extends ArrayAdapter {
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
         Order order = (Order) getItem(position);
         assert order != null;
-        order.setPosition(position);
         @SuppressLint("ViewHolder")
         View view = LayoutInflater.from(getContext()).inflate(resourceId, null);
         ((TextView) view.findViewById(R.id.name)).setText(order.getName());
         ((TextView) view.findViewById(R.id.phone)).setText(order.getPhone());
-        ((TextView) view.findViewById(R.id.mode)).setText(order.getMode());
-        ((TextView) view.findViewById(R.id.targetTime)).setText(order.getTargetTime());
+        ((TextView) view.findViewById(R.id.mode)).setText(order.getMode().value());
+        ((TextView) view.findViewById(R.id.targetTime)).setText(order.getSimpleTargetTime());
         ((TextView) view.findViewById(R.id.destination)).setText(order.getDestination());
         //((ImageView) view.findViewById(R.id.name)).setImageURI();
         ((TextView) view.findViewById(R.id.price)).setText(order.getPrice());
-        ((TextView) view.findViewById(R.id.priceState)).setText(order.getPriceState());
-        ((TextView) view.findViewById(R.id.progress)).setText(order.getProgress());
+        ((TextView) view.findViewById(R.id.payState)).setText(order.getPayState().value());
+        ((TextView) view.findViewById(R.id.progress)).setText(order.getProgress().value());
         ((TextView) view.findViewById(R.id.additional)).setText(order.getAdditional());
 
         view.findViewById(R.id.editBtn).setOnClickListener(v -> {
             Intent intent = new Intent();
             intent.setClass(getContext(), EditActivity.class);
+            intent.putExtra("order", order);
             mainActivity.startActivityForResult(intent, MainActivity.REQUEST_CODE);
         });
         return view;
@@ -60,6 +73,7 @@ public class OrderAdapter extends ArrayAdapter {
 
     public void updateItem(Order order) {
         assert order != null;
-        orderMap.get(order.getId()).valueOf(order);
+        addOrUpdateOrder(order);
+        notifyDataSetChanged();
     }
 }

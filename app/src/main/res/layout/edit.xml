@@ -15,7 +15,9 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -27,12 +29,14 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/name"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height"/>
+                android:layout_height="@dimen/column_height"
+                android:textAlignment="center"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -44,12 +48,15 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/phone"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:layout_height="@dimen/column_height"
+                android:inputType="number"
+                android:textAlignment="center"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -66,7 +73,8 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -75,15 +83,32 @@
                 android:gravity="center"
                 android:text="时间:" />
 
-            <TimePicker
+            <TextView
+                android:id="@+id/targetDate"
+                android:layout_width="@dimen/column_width_2"
+                android:layout_height="@dimen/column_height"
+                android:layout_gravity="center"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:textSize="18sp"/>
+            <View
+                android:layout_width="5dp"
+                android:layout_height="match_parent"
+                android:background="@null"/>
+            <TextView
                 android:id="@+id/targetTime"
-                android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:layout_width="@dimen/column_width_2"
+                android:layout_height="@dimen/column_height"
+                android:layout_gravity="center"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -95,7 +120,8 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/destination"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:layout_height="@dimen/column_height"
+                android:textAlignment="center"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -108,7 +134,8 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -124,7 +151,8 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -136,12 +164,15 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/price"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:layout_height="@dimen/column_height"
+                android:inputType="numberDecimal"
+                android:textAlignment="center"/>
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -151,14 +182,15 @@
                 android:text="支付状态:" />
 
             <Spinner
-                android:id="@+id/priceState"
+                android:id="@+id/payState"
                 android:layout_width="@dimen/column_width_4"
                 android:layout_height="@dimen/column_height" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -175,7 +207,8 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/item_margin">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -187,13 +220,17 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/additional"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:layout_height="@dimen/column_height"
+                android:textAlignment="center"/>
         </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/item_margin"
+        android:gravity="center"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/back"
@@ -205,7 +242,7 @@
             android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_marginTop="@dimen/item_margin"
             android:text="确定" />
-    </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>
