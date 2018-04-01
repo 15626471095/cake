@@ -33,12 +33,23 @@ public final class Utils {
         return intent;
     }
 
+    public static Intent encodeCakes(List<Cake> cakes, int orderId) {
+        Intent intent = encodeCakes(cakes);
+        intent.putExtra("orderId", orderId);
+        return intent;
+    }
+
     public static List<Cake> decodeCakes(Intent intent) {
         String string = intent.getStringExtra("cakes");
         if (StringUtils.isEmpty(string)) {
             return new ArrayList<>();
         }
         return new JsonArray(string).stream().map(s -> Json.decodeValue(s.toString(), Cake.class)).collect(Collectors.toList());
+    }
+
+    public static Pair<Integer, List<Cake>> decodeCakesWithOrderId(Intent intent) {
+        int orderId = intent.getIntExtra("orderId", -1);
+        return new Pair<>(orderId, decodeCakes(intent));
     }
 
     public static List<String> getCakesAbstract(List<Cake> cakes) {
@@ -49,7 +60,11 @@ public final class Utils {
         if (intent == null) {
             return null;
         }
-        return Json.decodeValue(intent.getStringExtra("order"), Order.class);
+        String s = intent.getStringExtra("order");
+        if (StringUtils.isEmpty(s)) {
+            return null;
+        }
+        return Json.decodeValue(s, Order.class);
     }
 
     public static Intent encodeOrder(Order order) {

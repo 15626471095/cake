@@ -1,7 +1,11 @@
 package studio.weiweima.cake.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
@@ -37,5 +41,17 @@ public final class ImageUtils {
         opts.inSampleSize = (int) scale;
         WeakReference<Bitmap> weak = new WeakReference<>(BitmapFactory.decodeFile(path, opts));
         return Bitmap.createScaledBitmap(weak.get(), w, h, true);
+    }
+
+    public static Bitmap getBitmap(Context context, String pictureUri, int w, int h) {
+        Bitmap bitmap = null;
+        try {
+            Bitmap origin = MediaStore.Images.Media.getBitmap(context.getContentResolver(), Uri.parse(pictureUri));
+            bitmap = Bitmap.createScaledBitmap(origin, w, h, true);
+        } catch (Exception e) {
+            Toast.makeText(context, "图片不存在！", Toast.LENGTH_LONG).show();
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 }

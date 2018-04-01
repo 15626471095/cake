@@ -1,13 +1,16 @@
 package studio.weiweima.cake.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -30,6 +33,25 @@ public class Order {
     private PayState payState = PayState.Unpay;
     private Progress progress = Progress.ToStart;
 
+    @JsonIgnore
+    private Map<String, Object> keyValueMap = new HashMap<>();
+
+    public Map<String, Object> setUpKeyValueMap() {
+        keyValueMap.put("id", id);
+        keyValueMap.put("name", name);
+        keyValueMap.put("phone", phone);
+        keyValueMap.put("createTime", createTime);
+        keyValueMap.put("mode", mode);
+        keyValueMap.put("targetTime", targetTime);
+        keyValueMap.put("additional", additional);
+        keyValueMap.put("destination", destination);
+        keyValueMap.put("cakes", cakes);
+        keyValueMap.put("price", price);
+        keyValueMap.put("payState", payState);
+        keyValueMap.put("progress", progress);
+        return keyValueMap;
+    }
+
     public Order() {
         id = random.nextInt();
         createTime = new Date(System.currentTimeMillis());
@@ -38,11 +60,15 @@ public class Order {
 
     public Order(String name, String phone, Mode mode, String additional, String destination, String price, PayState payState, Progress progress, List<Cake> cakes) {
         this();
+        progress = Progress.random(random);
+        mode = Mode.random(random);
+        price = String.valueOf(random.nextInt(Integer.valueOf(price)));
+        payState = PayState.random(random);
         setUp(name, phone, mode, additional, destination, price, payState, progress, cakes);
     }
 
     public Order valueOf(Order order) {
-        setUp(order.name, order.phone, order.mode, order.additional, order.destination, order.price, order.payState, order.progress, cakes);
+        setUp(order.name, order.phone, order.mode, order.additional, order.destination, order.price, order.payState, order.progress, order.cakes);
         this.targetTime = order.targetTime;
         return this;
     }

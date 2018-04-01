@@ -1,61 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     android:id="@+id/header"
-    android:orientation="horizontal"
-    android:gravity="start">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start"
+    android:orientation="horizontal">
+
     <TextView
-        android:layout_width="@dimen/column_width_1"
+        android:id="@+id/header_name"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/column_height"
-        android:text="姓名"
+        android:layout_weight="1.05"
+        android:gravity="center"
         android:singleLine="true"
-        android:gravity="center"/>
+        android:text="姓名" />
+
     <TextView
-        android:layout_width="@dimen/column_width_2"
+        android:id="@+id/header_phone"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/column_height"
-        android:text="电话"
-        android:gravity="center" />
-    <TextView
-        android:layout_width="@dimen/column_width_1"
-        android:layout_height="@dimen/column_height"
+        android:layout_weight="0.98"
         android:gravity="center"
-        android:text="模式"/>
+        android:text="电话" />
+
     <TextView
-        android:layout_width="@dimen/column_width_1"
+        android:id="@+id/header_mode"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/column_height"
+        android:layout_weight="1.05"
         android:gravity="center"
-        android:text="时间"/>
+        android:text="模式" />
+
     <TextView
-        android:layout_width="@dimen/column_width_2"
+        android:id="@+id/header_targetTime"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/column_height"
+        android:layout_weight="1.05"
         android:gravity="center"
-        android:text="目的地"/>
+        android:text="时间" />
+
     <TextView
-        android:layout_width="@dimen/column_width_2"
+        android:id="@+id/header_destination"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/column_height"
-        android:text="订单"
-        android:layout_gravity="center"
-        android:gravity="center"/>
-    <TextView
-        android:layout_width="@dimen/column_width_1"
-        android:layout_height="@dimen/column_height"
+        android:layout_weight="1"
         android:gravity="center"
-        android:text="价格"/>
+        android:text="目的地" />
+
     <TextView
-        android:layout_width="@dimen/column_width_2"
-        android:layout_height="@dimen/column_height"
-        android:gravity="center"
-        android:text="支付状态"/>
-    <TextView
-        android:layout_width="@dimen/column_width_2"
-        android:layout_height="@dimen/column_height"
-        android:gravity="center"
-        android:text="状态"/>
-    <TextView
-        android:layout_width="@dimen/column_width_3"
+        android:id="@+id/header_orderCakes"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/column_height"
         android:layout_gravity="center"
+        android:layout_weight="0.9"
         android:gravity="center"
-        android:text="备注"/>
+        android:text="订单" />
+
+    <TextView
+        android:id="@+id/header_price"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/column_height"
+        android:layout_weight="1.05"
+        android:gravity="center"
+        android:text="价格" />
+
+    <TextView
+        android:id="@+id/header_payState"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/column_height"
+        android:layout_weight="1.01"
+        android:gravity="center"
+        android:text="支付状态" />
+
+    <TextView
+        android:id="@+id/header_progress"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/column_height"
+        android:layout_weight="1.03"
+        android:gravity="center"
+        android:text="状态" />
+
+    <TextView
+        android:id="@+id/header_additional"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/column_height"
+        android:layout_gravity="center"
+        android:layout_weight="0.96"
+        android:gravity="center"
+        android:text="备注" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/column_height"
+        android:layout_weight="1.04"
+        android:background="@null" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/column_height"
+        android:layout_weight="1.04"
+        android:background="@null" />
 </LinearLayout>

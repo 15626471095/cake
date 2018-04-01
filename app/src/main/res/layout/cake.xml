@@ -40,10 +40,10 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="start|center"
             android:orientation="horizontal"
             tools:ignore="NestedWeights">
 
@@ -51,6 +51,7 @@
                 android:id="@+id/edit_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/corner"
                 android:gravity="center"
                 android:padding="10dp"
@@ -59,15 +60,15 @@
 
             <Spinner
                 android:id="@+id/type"
-                android:layout_width="@dimen/column_width_3"
+                android:layout_width="@dimen/column_width_4"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="start|center"
             android:orientation="horizontal"
             tools:ignore="NestedWeights">
 
@@ -75,6 +76,7 @@
                 android:id="@+id/edit_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/corner"
                 android:gravity="center"
                 android:padding="10dp"
@@ -83,20 +85,21 @@
 
             <Spinner
                 android:id="@+id/weight"
-                android:layout_width="@dimen/column_width_3"
+                android:layout_width="@dimen/column_width_4"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center">
+            android:gravity="start|center">
 
             <TextView
                 android:id="@+id/edit_taste"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/corner"
                 android:gravity="center"
                 android:padding="10dp"
@@ -105,20 +108,44 @@
 
             <Spinner
                 android:id="@+id/taste"
-                android:layout_width="@dimen/column_width_3"
+                android:layout_width="@dimen/column_width_4"
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.8"
-            android:gravity="center">
+            android:layout_weight="1"
+            android:gravity="start|center">
+
+            <TextView
+                android:id="@+id/edit_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/corner"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="款式:"
+                android:textSize="@dimen/title_font_size" />
+
+            <Spinner
+                android:id="@+id/style"
+                android:layout_width="@dimen/column_width_4"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="start|center">
 
             <TextView
                 android:id="@+id/edit_additional"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
                 android:background="@drawable/corner"
                 android:gravity="center"
                 android:padding="10dp"
@@ -136,7 +163,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0.60">
+            android:layout_weight="0.7">
 
             <TextView
                 android:id="@+id/edit_require"
@@ -177,11 +204,11 @@
         android:layout_weight="1.65">
 
         <Button
-            android:id="@+id/back"
+            android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:text="取消" />
+            android:text="确定" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -193,22 +220,23 @@
                 android:id="@+id/add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:text="添加" />
 
             <Button
                 android:id="@+id/delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:text="删除" />
 
         </LinearLayout>
 
         <Button
-            android:id="@+id/confirm"
+            android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:text="确定" />
-
+            android:text="取消" />
     </RelativeLayout>
 </LinearLayout>

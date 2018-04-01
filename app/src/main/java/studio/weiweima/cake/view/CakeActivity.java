@@ -3,7 +3,6 @@ package studio.weiweima.cake.view;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -16,28 +15,28 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import studio.weiweima.cake.R;
 import studio.weiweima.cake.bean.Cake;
+import studio.weiweima.cake.bean.RequestCode;
 import studio.weiweima.cake.database.StorageManager;
-import studio.weiweima.cake.external.Json;
+import studio.weiweima.cake.util.BitmapCache;
 import studio.weiweima.cake.util.StringUtils;
 import studio.weiweima.cake.util.Utils;
 
 public class CakeActivity extends AppCompatActivity {
 
-    public static final int SELECT_PICTURE = 300;
-
     private List<Cake> cakes;
+    private int orderId = -1;
 
     private ListView orderedCakeListView;
     private Spinner typeSpinner;
     private Spinner weightSpinner;
     private Spinner tasteSpinner;
+    private Spinner styleSpinner;
     private ListView requireListViewLeft;
     private ListView requireListViewRight;
     private TextInputEditText additionalEditText;
@@ -47,15 +46,23 @@ public class CakeActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cake);
-        cakes = Utils.decodeCakes(getIntent());
+        parseIntent();
         initButton();
         initPicture();
         initTypes();
         initWeights();
         initTastes();
         initRequires();
+        initStyles();
         initAdditional();
         initOrderedCakeList();
+    }
+
+    private void parseIntent() {
+        Intent intent = getIntent();
+        Pair<Integer, List<Cake>> args = Utils.decodeCakesWithOrderId(intent);
+        cakes = args.second;
+        orderId = args.first;
     }
 
     @Override
@@ -69,7 +76,9 @@ public class CakeActivity extends AppCompatActivity {
         adapter.update(Utils.getCakesAbstract(cakes));
         adapter.setSelectedPosition(cakes.size() - 1);
         onSelectedCake(cakes.get(adapter.getSelectedPosition()));
-        orderedCakeListView.scrollBy(0, 50);
+        if (cakes.size() > 5) {
+            orderedCakeListView.scrollBy(0, 50);
+        }
     }
 
     private void onRemoveCake() {
@@ -82,7 +91,7 @@ public class CakeActivity extends AppCompatActivity {
     private void onConfirm() {
         SimpleAdapter adapter = (SimpleAdapter) orderedCakeListView.getAdapter();
         collectData(adapter.getSelectedPosition());
-        Intent intent = Utils.encodeCakes(cakes);
+        Intent intent = Utils.encodeCakes(cakes, orderId);
         setResult(RESULT_OK, intent);
         finish();
     }
@@ -98,6 +107,7 @@ public class CakeActivity extends AppCompatActivity {
         String type = (String) typeSpinner.getSelectedItem();
         String weight = (String) weightSpinner.getSelectedItem();
         String taste = (String) tasteSpinner.getSelectedItem();
+        String style = (String) styleSpinner.getSelectedItem();
         List<String> requires = ((SimpleAdapter) requireListViewLeft.getAdapter()).getCheckedData();
         List<String> requiresRight = ((SimpleAdapter) requireListViewRight.getAdapter()).getCheckedData();
 
@@ -105,7 +115,7 @@ public class CakeActivity extends AppCompatActivity {
         String additional = additionalEditText.getText().toString();
         String pictureUri = consumePictureUri();
         SimpleAdapter cakeListAdapter = (SimpleAdapter) orderedCakeListView.getAdapter();
-        cakes.get(position).setUp(type, weight, taste, requires, pictureUri, additional);
+        cakes.get(position).setUp(type, weight, taste, style, requires, pictureUri, additional);
         cakeListAdapter.update(Utils.getCakesAbstract(cakes));
     }
 
@@ -129,7 +139,9 @@ public class CakeActivity extends AppCompatActivity {
             }
             adapter.setSelectedPosition(i);
         });
-        orderedCakeListView.performItemClick(null, 0, 0);
+        if (!cakes.isEmpty()) {
+            orderedCakeListView.performItemClick(null, 0, 0);
+        }
     }
 
     private void initTypes() {
@@ -172,6 +184,12 @@ public class CakeActivity extends AppCompatActivity {
         });
     }
 
+    private void initStyles() {
+        styleSpinner = findViewById(R.id.style);
+        List<String> styles = StorageManager.getInstance().getStyles(this);
+        setUpSpinner(styleSpinner, R.layout.simple_item, styles);
+    }
+
     public void showRequiresDialog(List<String> requires, List<String> selectedRequires) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         boolean[] isChecks = new boolean[requires.size()];
@@ -205,6 +223,7 @@ public class CakeActivity extends AppCompatActivity {
         typeSpinner.setSelection(((SimpleAdapter) typeSpinner.getAdapter()).getPosition(selectedCake.getType()));
         weightSpinner.setSelection(((SimpleAdapter) weightSpinner.getAdapter()).getPosition(selectedCake.getWeight()));
         tasteSpinner.setSelection(((SimpleAdapter) tasteSpinner.getAdapter()).getPosition(selectedCake.getTaste()));
+        styleSpinner.setSelection(((SimpleAdapter) styleSpinner.getAdapter()).getPosition(selectedCake.getStyle()));
         additionalEditText.setText(selectedCake.getAdditional());
         ((SimpleAdapter) requireListViewLeft.getAdapter()).updateChecks(selectedCake.getRequires());
         ((SimpleAdapter) requireListViewRight.getAdapter()).updateChecks(selectedCake.getRequires());
@@ -220,7 +239,7 @@ public class CakeActivity extends AppCompatActivity {
         picture.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, null);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            startActivityForResult(intent, SELECT_PICTURE);
+            startActivityForResult(intent, RequestCode.SELECT_PICTURE);
         });
     }
 
@@ -231,14 +250,7 @@ public class CakeActivity extends AppCompatActivity {
         }
         Log.e("path:", pictureUri);
         providePictureUri(pictureUri);
-        Bitmap bitmap = null;
-        try {
-            Bitmap origin = MediaStore.Images.Media.getBitmap(this.getContentResolver(), Uri.parse(pictureUri));
-            bitmap = Bitmap.createScaledBitmap(origin, 300, 300, true);
-        } catch (Exception e) {
-            Toast.makeText(this, "图片不存在！", Toast.LENGTH_LONG).show();
-            e.printStackTrace();
-        }
+        Bitmap bitmap = BitmapCache.getInstance().getBitmap(this, pictureUri, 300, 300);
         if (bitmap != null) {
             picture.setImageBitmap(bitmap);
         }
@@ -258,7 +270,7 @@ public class CakeActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == SELECT_PICTURE && resultCode == RESULT_OK) {
+        if (requestCode == RequestCode.SELECT_PICTURE && resultCode == RESULT_OK) {
             setPicture(data.getDataString());
         }
     }

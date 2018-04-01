@@ -1,6 +1,5 @@
 package studio.weiweima.cake.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
@@ -16,6 +15,7 @@ public class Cake {
     private List<String> requires = new ArrayList<>();
     private String pictureUri = "";
     private String additional = "";
+    private String style = "裸";
 
     static Random random = new Random(System.currentTimeMillis());
 
@@ -28,10 +28,11 @@ public class Cake {
         requires.addAll(Arrays.asList("少奶油", "多奶油", "少甜"));
     }
 
-    public void setUp(String type, String weight, String taste, List<String> requires, String pictureUri, String additional) {
+    public void setUp(String type, String weight, String taste, String style, List<String> requires, String pictureUri, String additional) {
         this.type = type;
         this.weight = weight;
         this.taste = taste;
+        this.style = style;
         this.requires = requires;
         this.pictureUri = pictureUri;
         this.additional = additional;
@@ -43,6 +44,10 @@ public class Cake {
 
     public String getTaste() {
         return taste;
+    }
+
+    public String getStyle() {
+        return style;
     }
 
     public String getWeight() {
@@ -73,6 +78,10 @@ public class Cake {
         this.taste = taste;
     }
 
+    public void setStyle(String style) {
+        this.style = style;
+    }
+
     public void setPictureUri(String pictureUri) {
         this.pictureUri = pictureUri;
     }
@@ -84,7 +93,7 @@ public class Cake {
     public String getAbstract() {
         switch (type) {
             case "生日蛋糕":
-                return weight + taste;
+                return weight + taste + style;
             default:
                 return taste;
         }

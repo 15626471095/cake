@@ -1,6 +1,7 @@
 package studio.weiweima.cake.bean;
 
 import java.util.Arrays;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 public enum Mode {
@@ -25,6 +26,10 @@ public enum Mode {
 
     public String value() {
         return this.value;
+    }
+
+    public static Mode random(Random random) {
+        return values()[Math.abs(random.nextInt() % values().length)];
     }
 
     public static String[] allValues() {

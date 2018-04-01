@@ -133,4 +133,18 @@ public final class StorageManager {
     public void addType(Context context, String type) {
         addAsString(context, TYPE, type);
     }
+
+    /**
+     * Style type
+     */
+    public static final String STYLE = "style.db";
+    public List<String> defaultStyles = Arrays.asList("裸", "红包", "皇冠", "其他");
+
+    public List<String> getStyles(Context context) {
+        return getAsStringList(context, STYLE, defaultStyles);
+    }
+
+    public void addStyle(Context context, String style) {
+        addAsString(context, STYLE, style);
+    }
 }
