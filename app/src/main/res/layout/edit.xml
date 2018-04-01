@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/edit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,16 +9,18 @@
 
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:focusable="true"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            tools:ignore="NestedWeights">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -29,14 +32,15 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/name"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height"
-                android:textAlignment="center"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -48,33 +52,16 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/phone"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height"
-                android:inputType="number"
-                android:textAlignment="center"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
-
-            <TextView
-                android:layout_width="@dimen/column_width_2"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:text="模式:" />
-
-            <Spinner
-                android:id="@+id/mode"
-                android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:inputType="number"
+                android:textAlignment="center" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -90,11 +77,13 @@
                 android:layout_gravity="center"
                 android:background="@color/colorPrimary"
                 android:gravity="center"
-                android:textSize="18sp"/>
+                android:textSize="18sp" />
+
             <View
                 android:layout_width="5dp"
                 android:layout_height="match_parent"
-                android:background="@null"/>
+                android:background="@null" />
+
             <TextView
                 android:id="@+id/targetTime"
                 android:layout_width="@dimen/column_width_2"
@@ -107,8 +96,27 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="@dimen/column_width_2"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="模式:" />
+
+            <Spinner
+                android:id="@+id/mode"
+                android:layout_width="@dimen/column_width_4"
+                android:layout_height="@dimen/column_height"
+                android:layout_gravity="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -120,59 +128,15 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/destination"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height"
-                android:textAlignment="center"/>
-        </LinearLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
-
-            <TextView
-                android:layout_width="@dimen/column_width_2"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
-                android:text="款式图:" />
-
-            <ImageView
-                android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:textAlignment="center" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
-
-            <TextView
-                android:layout_width="@dimen/column_width_2"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="价格:" />
-
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/price"
-                android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height"
-                android:inputType="numberDecimal"
-                android:textAlignment="center"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -184,13 +148,14 @@
             <Spinner
                 android:id="@+id/payState"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:layout_height="@dimen/column_height"
+                android:layout_gravity="center" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -202,13 +167,73 @@
             <Spinner
                 android:id="@+id/progress"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height" />
+                android:layout_height="@dimen/column_height"
+                android:layout_gravity="center" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            tools:ignore="NestedWeights">
+
+            <TextView
+                android:layout_width="@dimen/column_width_2"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="订单:" />
+
+            <ListView
+                android:id="@+id/ordered_cakes"
+                android:layout_width="@dimen/column_width_4"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:divider="@null"
+                android:dividerHeight="0dp" />
+
+            <Button
+                android:id="@+id/edit_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="编辑" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="@dimen/column_width_2"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="价格:" />
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/price"
+                android:layout_width="@dimen/column_width_4"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:inputType="numberDecimal"
+                android:textAlignment="center" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <TextView
                 android:layout_width="@dimen/column_width_2"
@@ -220,8 +245,9 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/additional"
                 android:layout_width="@dimen/column_width_4"
-                android:layout_height="@dimen/column_height"
-                android:textAlignment="center"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center" />
         </LinearLayout>
     </LinearLayout>
 
@@ -242,7 +268,6 @@
             android:id="@+id/confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/item_margin"
             android:text="确定" />
     </LinearLayout>
 </LinearLayout>

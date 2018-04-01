@@ -7,25 +7,31 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
-import studio.weiweima.cake.MainActivity;
 import studio.weiweima.cake.R;
+import studio.weiweima.cake.bean.Cake;
 import studio.weiweima.cake.bean.Mode;
 import studio.weiweima.cake.bean.Order;
 import studio.weiweima.cake.bean.PayState;
 import studio.weiweima.cake.bean.Progress;
 import studio.weiweima.cake.util.StringUtils;
+import studio.weiweima.cake.util.Utils;
 
 public class EditActivity extends AppCompatActivity {
 
+    private static final int EDIT_CAKES = 201;
 
     private Order order;
+
+    private ListView orderedCakesListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,9 +49,8 @@ public class EditActivity extends AppCompatActivity {
         findViewById(R.id.back).setOnClickListener(v -> finish());
         findViewById(R.id.confirm).setOnClickListener(v -> {
             if (update()) {
-                Intent intent = new Intent();
-                intent.putExtra("order", order);
-                setResult(MainActivity.REQUEST_CODE, intent);
+                Intent intent = Utils.encodeOrder(order);
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
@@ -100,8 +105,30 @@ public class EditActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EDIT_CAKES && resultCode == RESULT_OK) {
+            List<Cake> cakes = Utils.decodeCakes(data);
+            order.setCakes(cakes);
+            ((SimpleAdapter) orderedCakesListView.getAdapter()).update(Utils.getCakesAbstract(cakes));
+        }
+        update();
+    }
+
+    private void initCakes() {
+        orderedCakesListView = findViewById(R.id.ordered_cakes);
+        List<String> cakeAbstract = Utils.getCakesAbstract(order.getCakes());
+        SimpleAdapter adapter = new SimpleAdapter(this, R.layout.simple_item_start, cakeAbstract);
+        orderedCakesListView.setAdapter(adapter);
+        findViewById(R.id.edit_item).setOnClickListener(v -> {
+            Intent intent = Utils.encodeCakes(order.getCakes());
+            intent.setClass(this, CakeActivity.class);
+            startActivityForResult(intent, EDIT_CAKES);
+        });
+    }
+
     private void set() {
-        order = (Order) getIntent().getSerializableExtra("order");
+        order = Utils.decodeOrder(getIntent());
         if (order == null) {
             order = new Order();
         } else {
@@ -113,6 +140,8 @@ public class EditActivity extends AppCompatActivity {
             ((Spinner) findViewById(R.id.mode)).setSelection(order.getMode().ordinal());
             ((Spinner) findViewById(R.id.payState)).setSelection(order.getPayState().ordinal());
             ((Spinner) findViewById(R.id.progress)).setSelection(order.getProgress().ordinal());
+            initCakes();
+            // TODO set cake
         }
         calendar = Calendar.getInstance();
         calendar.setTime(order.getTargetTime());

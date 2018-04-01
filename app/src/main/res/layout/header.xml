@@ -34,7 +34,7 @@
     <TextView
         android:layout_width="@dimen/column_width_2"
         android:layout_height="@dimen/column_height"
-        android:text="款式图"
+        android:text="订单"
         android:layout_gravity="center"
         android:gravity="center"/>
     <TextView

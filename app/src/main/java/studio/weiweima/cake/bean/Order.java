@@ -1,13 +1,17 @@
 package studio.weiweima.cake.bean;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class Order implements Serializable {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Order {
 
     private static final DateFormat format = new SimpleDateFormat("hh:mm", Locale.CHINA);
     private static Random random = new Random(System.currentTimeMillis());
@@ -20,7 +24,7 @@ public class Order implements Serializable {
     private Date targetTime;
     private String additional;
     private String destination;
-    private Void picture = null;
+    private List<Cake> cakes = new ArrayList<>();
 
     private String price;
     private PayState payState = PayState.Unpay;
@@ -32,18 +36,18 @@ public class Order implements Serializable {
         targetTime = new Date(System.currentTimeMillis());
     }
 
-    public Order(String name, String phone, Mode mode, String additional, String destination, String price, PayState payState, Progress progress) {
+    public Order(String name, String phone, Mode mode, String additional, String destination, String price, PayState payState, Progress progress, List<Cake> cakes) {
         this();
-        setUp(name, phone, mode, additional, destination, price, payState, progress);
+        setUp(name, phone, mode, additional, destination, price, payState, progress, cakes);
     }
 
     public Order valueOf(Order order) {
-        setUp(order.name, order.phone, order.mode, order.additional, order.destination, order.price, order.payState, order.progress);
+        setUp(order.name, order.phone, order.mode, order.additional, order.destination, order.price, order.payState, order.progress, cakes);
         this.targetTime = order.targetTime;
         return this;
     }
 
-    public void setUp(String name, String phone, Mode mode, String additional, String destination, String price, PayState payState, Progress progress) {
+    public void setUp(String name, String phone, Mode mode, String additional, String destination, String price, PayState payState, Progress progress, List<Cake> cakes) {
         this.name = name;
         this.phone = phone;
         this.mode = mode;
@@ -52,6 +56,7 @@ public class Order implements Serializable {
         this.price = price;
         this.payState = payState;
         this.progress = progress;
+        this.cakes = cakes;
     }
 
     public String getName() {
@@ -98,6 +103,10 @@ public class Order implements Serializable {
         return id;
     }
 
+    public List<Cake> getCakes() {
+        return cakes;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -132,5 +141,9 @@ public class Order implements Serializable {
 
     public void setTargetTime(Date targetTime) {
         this.targetTime = targetTime;
+    }
+
+    public void setCakes(List<Cake> cakes) {
+        this.cakes = cakes;
     }
 }

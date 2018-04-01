@@ -3,8 +3,8 @@
     android:id="@+id/item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="100dp"
     android:gravity="start"
+    android:maxHeight="150dp"
     android:orientation="horizontal">
 
     <TextView
@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="姓名名" />
+        android:text="姓名" />
 
     <TextView
         android:id="@+id/phone"
@@ -47,11 +47,10 @@
         android:gravity="center"
         android:text="目的地" />
 
-    <ImageView
-        android:id="@+id/picture"
+    <ListView
+        android:id="@+id/orderItems"
         android:layout_width="@dimen/column_width_2"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/price"

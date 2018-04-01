@@ -16,6 +16,7 @@ import java.util.Map;
 import studio.weiweima.cake.MainActivity;
 import studio.weiweima.cake.R;
 import studio.weiweima.cake.bean.Order;
+import studio.weiweima.cake.util.Utils;
 
 public class OrderAdapter extends ArrayAdapter {
 
@@ -63,10 +64,9 @@ public class OrderAdapter extends ArrayAdapter {
         ((TextView) view.findViewById(R.id.additional)).setText(order.getAdditional());
 
         view.findViewById(R.id.editBtn).setOnClickListener(v -> {
-            Intent intent = new Intent();
+            Intent intent = Utils.encodeOrder(order);
             intent.setClass(getContext(), EditActivity.class);
-            intent.putExtra("order", order);
-            mainActivity.startActivityForResult(intent, MainActivity.REQUEST_CODE);
+            mainActivity.startActivityForResult(intent, MainActivity.EDIT_ORDER);
         });
         return view;
     }
