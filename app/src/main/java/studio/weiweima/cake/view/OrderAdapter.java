@@ -26,6 +26,7 @@ import studio.weiweima.cake.bean.Order;
 import studio.weiweima.cake.bean.Progress;
 import studio.weiweima.cake.bean.RequestCode;
 import studio.weiweima.cake.util.BitmapCache;
+import studio.weiweima.cake.util.DialogUtils;
 import studio.weiweima.cake.util.StringUtils;
 import studio.weiweima.cake.util.Utils;
 
@@ -42,8 +43,21 @@ public class OrderAdapter extends ArrayAdapter {
         super(mainActivity, resourceId, orderList);
         this.mainActivity = mainActivity;
         this.resourceId = resourceId;
-        this.orderList = orderList;
+        updateOrderList(orderList, false);
+    }
+
+    public void updateOrderList(List<Order> orders, boolean notify) {
+        orderMap.clear();
+        if (this.orderList == null) {
+            this.orderList = orders;
+        } else {
+            orderList.clear();
+            orderList.addAll(orders);
+        }
         orderList.forEach(o -> orderMap.put(o.getId(), o));
+        if (notify) {
+            notifyDataSetChanged();
+        }
     }
 
     private void addOrUpdateOrder(Order order) {
@@ -91,7 +105,9 @@ public class OrderAdapter extends ArrayAdapter {
             intent.setClass(getContext(), EditActivity.class);
             mainActivity.startActivityForResult(intent, RequestCode.EDIT_ORDER);
         });
-        view.findViewById(R.id.deleteBtn).setOnClickListener(v -> removeOrder(position));
+        view.findViewById(R.id.deleteBtn).setOnClickListener(v -> DialogUtils.showDeleteConfirmDialog(mainActivity, t -> {
+            removeOrder(position);
+        }));
         setCakeList(view, order);
         return view;
     }

@@ -13,6 +13,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 
+import studio.weiweima.cake.MainActivity;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Order {
 
@@ -20,16 +22,16 @@ public class Order {
     private static Random random = new Random(System.currentTimeMillis());
 
     private int id;
-    private String name;
-    private String phone;
+    private String name = "";
+    private String phone = "";
     private Date createTime;
     private Mode mode = Mode.Self;
     private Date targetTime;
-    private String additional;
-    private String destination;
+    private String additional = "";
+    private String destination = "";
     private List<Cake> cakes = new ArrayList<>();
 
-    private String price;
+    private String price = "";
     private PayState payState = PayState.Unpay;
     private Progress progress = Progress.ToStart;
 

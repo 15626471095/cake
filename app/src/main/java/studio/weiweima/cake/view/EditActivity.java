@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -129,17 +130,18 @@ public class EditActivity extends AppCompatActivity {
     private void set() {
         order = Utils.decodeOrder(getIntent());
         if (order == null) {
-            order = new Order();
-        } else {
-            ((TextInputEditText) findViewById(R.id.name)).setText(order.getName());
-            ((TextInputEditText) findViewById(R.id.phone)).setText(order.getPhone());
-            ((TextInputEditText) findViewById(R.id.destination)).setText(order.getDestination());
-            ((TextInputEditText) findViewById(R.id.price)).setText(order.getPrice());
-            ((TextInputEditText) findViewById(R.id.additional)).setText(order.getAdditional());
-            ((Spinner) findViewById(R.id.mode)).setSelection(order.getMode().ordinal());
-            ((Spinner) findViewById(R.id.payState)).setSelection(order.getPayState().ordinal());
-            ((Spinner) findViewById(R.id.progress)).setSelection(order.getProgress().ordinal());
+            order = new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
+                    "北栅", "200", PayState.Alipay, Progress.ToDistribute,
+                    Collections.singletonList(new Cake()));
         }
+        ((TextInputEditText) findViewById(R.id.name)).setText(order.getName());
+        ((TextInputEditText) findViewById(R.id.phone)).setText(order.getPhone());
+        ((TextInputEditText) findViewById(R.id.destination)).setText(order.getDestination());
+        ((TextInputEditText) findViewById(R.id.price)).setText(order.getPrice());
+        ((TextInputEditText) findViewById(R.id.additional)).setText(order.getAdditional());
+        ((Spinner) findViewById(R.id.mode)).setSelection(order.getMode().ordinal());
+        ((Spinner) findViewById(R.id.payState)).setSelection(order.getPayState().ordinal());
+        ((Spinner) findViewById(R.id.progress)).setSelection(order.getProgress().ordinal());
         initCakes();
         calendar = Calendar.getInstance();
         calendar.setTime(order.getTargetTime());

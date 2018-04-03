@@ -8,7 +8,6 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.CheckBox;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import studio.weiweima.cake.R;
@@ -24,6 +22,7 @@ import studio.weiweima.cake.bean.Cake;
 import studio.weiweima.cake.bean.RequestCode;
 import studio.weiweima.cake.database.StorageManager;
 import studio.weiweima.cake.util.BitmapCache;
+import studio.weiweima.cake.util.DialogUtils;
 import studio.weiweima.cake.util.StringUtils;
 import studio.weiweima.cake.util.Utils;
 
@@ -82,10 +81,18 @@ public class CakeActivity extends AppCompatActivity {
     }
 
     private void onRemoveCake() {
-        SimpleAdapter adapter = (SimpleAdapter) orderedCakeListView.getAdapter();
-        cakes.remove(adapter.getSelectedPosition());
-        adapter.update(Utils.getCakesAbstract(cakes));
-        onSelectedCake(cakes.get(adapter.getSelectedPosition()));
+        DialogUtils.showDeleteConfirmDialog(this, v -> {
+            SimpleAdapter adapter = (SimpleAdapter) orderedCakeListView.getAdapter();
+            cakes.remove(adapter.getSelectedPosition());
+            adapter.update(Utils.getCakesAbstract(cakes));
+            Cake selectedCake;
+            if (adapter.getSelectedPosition() != -1) {
+                selectedCake = cakes.get(adapter.getSelectedPosition());
+            } else {
+                selectedCake = new Cake();
+            }
+            onSelectedCake(selectedCake);
+        });
     }
 
     private void onConfirm() {
@@ -188,30 +195,6 @@ public class CakeActivity extends AppCompatActivity {
         styleSpinner = findViewById(R.id.style);
         List<String> styles = StorageManager.getInstance().getStyles(this);
         setUpSpinner(styleSpinner, R.layout.simple_item, styles);
-    }
-
-    public void showRequiresDialog(List<String> requires, List<String> selectedRequires) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        boolean[] isChecks = new boolean[requires.size()];
-        String[] requiresArrays = requires.toArray(new String[requires.size()]);
-        selectedRequires.forEach(s -> {
-            int index = requires.indexOf(s);
-            if (index != -1) {
-                isChecks[index] = true;
-            }
-        });
-        builder.setMultiChoiceItems(requiresArrays, isChecks, (dialog, which, isChecked) -> {
-            isChecks[which] = isChecked;
-            Log.e("setMultiChoiceItems", "" + which + " " + isChecked);
-        }).setNegativeButton("取消", (dialog, id) -> dialog.dismiss()).setPositiveButton("确定", (dialog, id) -> {
-            List<String> result = new ArrayList<>();
-            for (int i = 0; i < isChecks.length; i++) {
-                if (isChecks[i]) {
-                    result.add(requiresArrays[i]);
-                }
-            }
-            dialog.dismiss();
-        }).show();
     }
 
     private void setUpSpinner(Spinner spinner, int itemLayoutId, List<String> data) {

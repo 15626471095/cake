@@ -2,15 +2,24 @@ package studio.weiweima.cake.database;
 
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
+import studio.weiweima.cake.bean.Order;
+import studio.weiweima.cake.external.Json;
 import studio.weiweima.cake.external.JsonArray;
+import studio.weiweima.cake.external.JsonObject;
 import studio.weiweima.cake.util.FileUtils;
 import studio.weiweima.cake.util.StringUtils;
 
@@ -33,6 +42,7 @@ public final class StorageManager {
         return cache.compute(key, (k, v) -> {
             if (v == null) {
                 v = FileUtils.readFrom(context, key);
+                Log.e("ReadFile", key + ": " + v);
             }
             return v;
         });
@@ -50,31 +60,32 @@ public final class StorageManager {
     }
 
     public void onUpdate(Context context) {
+        Log.e("onUpdate", "running");
         dirtyMap.forEach((k, v) -> {
             if (v.compareAndSet(true, false)) {
-                FileUtils.writeTo(context, k, cache.get(k));
+                String content = cache.get(k);
+                FileUtils.writeTo(context, k, content);
+                Log.e("WriteFile", k + ": " + content);
             }
         });
     }
 
-    public List<String> getAsStringList(Context context, String key, List<String> defaultList) {
+    public List<Object> getAsList(Context context, String key, List<String> defaultList) {
         String content = StringUtils.wrap(get(context, key), "[]");
-        JsonArray arrays = new JsonArray(content);
-        List<String> list = new ArrayList<>(defaultList);
-        arrays.forEach(w -> {
-            if (!list.contains(w)) {
-                addWeight(context, (String) w);
-                list.add((String) w);
-            }
-        });
-        return list;
+        Set<Object> arrays = new JsonArray(content).stream().collect(Collectors.toSet());
+        int dbSize = arrays.size();
+        arrays.addAll(defaultList);
+        if (dbSize != arrays.size()) {
+            update(key, Json.encode(arrays));
+        }
+        return new ArrayList<>(arrays);
     }
 
     public void addAsString(Context context, String key, String value) {
         String content = StringUtils.wrap(get(context, key), "[]");
         JsonArray arrays = new JsonArray(content);
         arrays.add(value);
-        update(WEIGHT, arrays.toString());
+        update(key, arrays.toString());
     }
 
     /**
@@ -84,7 +95,7 @@ public final class StorageManager {
     private List<String> defaultWeights = Arrays.asList("四寸", "1磅", "1.5磅", "2磅", "3磅", "4磅", "5磅", "6磅", "7磅");
 
     public List<String> getWeights(Context context) {
-        return getAsStringList(context, WEIGHT, defaultWeights);
+        return StringUtils.toStringList(getAsList(context, WEIGHT, defaultWeights));
     }
 
     public void addWeight(Context context, String weight) {
@@ -98,7 +109,7 @@ public final class StorageManager {
     private List<String> defaultTastes = Arrays.asList("芒果", "草莓", "杂果", "榴莲", "栗子", "咸奶油", "慕斯", "海盐红丝绒", "巧克力", "抹茶");
 
     public List<String> getTastes(Context context) {
-        return getAsStringList(context, TASTE, defaultTastes);
+        return StringUtils.toStringList(getAsList(context, TASTE, defaultTastes));
     }
 
     public void addTaste(Context context, String taste) {
@@ -113,7 +124,7 @@ public final class StorageManager {
     private List<String> defaultRequires = Arrays.asList("无", "少奶油", "多奶油", "少甜", "多甜");
 
     public List<String> getRequires(Context context) {
-        return getAsStringList(context, REQUIRE, defaultRequires);
+        return StringUtils.toStringList(getAsList(context, REQUIRE, defaultRequires));
     }
 
     public void addRequire(Context context, String require) {
@@ -127,7 +138,7 @@ public final class StorageManager {
     private List<String> defaultTypes = Arrays.asList("生日蛋糕", "盒子蛋糕", "饮料", "其他");
 
     public List<String> getTypes(Context context) {
-        return getAsStringList(context, TYPE, defaultTypes);
+        return StringUtils.toStringList(getAsList(context, TYPE, defaultTypes));
     }
 
     public void addType(Context context, String type) {
@@ -141,10 +152,56 @@ public final class StorageManager {
     public List<String> defaultStyles = Arrays.asList("裸", "红包", "皇冠", "其他");
 
     public List<String> getStyles(Context context) {
-        return getAsStringList(context, STYLE, defaultStyles);
+        return StringUtils.toStringList(getAsList(context, STYLE, defaultStyles));
     }
 
     public void addStyle(Context context, String style) {
         addAsString(context, STYLE, style);
+    }
+
+    /**
+     * Order
+     */
+    public static final String ORDER_FORMAT = "order_%d_%d_%d.db";
+
+    public String getOrderKey(Calendar calendar) {
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        return String.format(Locale.CHINESE, ORDER_FORMAT, year, month, day);
+    }
+
+    public List<Order> getOrders(Context context, Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        return getOrders(context, calendar);
+    }
+
+    public List<Order> getOrders(Context context, Calendar calendar) {
+        String orderKey = getOrderKey(calendar);
+        List<Object> orders = getAsList(context, orderKey, new ArrayList<>());
+        return orders.stream().map(o -> Json.decodeValue(o.toString(), Order.class)).collect(Collectors.toList());
+    }
+
+    public void updateOrders(Date date, List<Order> orderList) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        updateOrders(calendar, orderList);
+    }
+
+    public void updateOrders(Calendar calendar, List<Order> orderList) {
+        String orderKey = getOrderKey(calendar);
+        update(orderKey, Json.encode(orderList));
+    }
+
+    public boolean checkOrderIdExist(int id) {
+        Calendar calendar = Calendar.getInstance();
+        Date date = new Date(System.currentTimeMillis());
+        calendar.setTime(date);
+        String orderKey = getOrderKey(calendar);
+        if (new JsonArray(cache.get(orderKey)).stream().anyMatch(order -> ((JsonObject) order).getInteger("id") == id)) {
+            return true;
+        }
+        return false;
     }
 }

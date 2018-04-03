@@ -1,21 +1,23 @@
 package studio.weiweima.cake;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import studio.weiweima.cake.bean.Cake;
-import studio.weiweima.cake.bean.Mode;
 import studio.weiweima.cake.bean.Order;
-import studio.weiweima.cake.bean.PayState;
-import studio.weiweima.cake.bean.Progress;
 import studio.weiweima.cake.bean.RequestCode;
+import studio.weiweima.cake.database.StorageManager;
 import studio.weiweima.cake.util.PermissionUtils;
 import studio.weiweima.cake.util.Utils;
 import studio.weiweima.cake.view.EditActivity;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<Order> orderList = new ArrayList<>();
     private ListView listView;
+    private static int STORE_INTERVAL = 60 * 10 * 1000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,43 +38,32 @@ public class MainActivity extends AppCompatActivity {
         initOrderList();
         initListView();
         initCreateBtn();
-        initSortHeader();
+        initHeaders();
+        setUpTimer();
+    }
+
+    public void setUpTimer() {
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                StorageManager.getInstance().onUpdate(MainActivity.this);
+                handler.postDelayed(this, STORE_INTERVAL);
+            }
+        };
+        handler.postDelayed(runnable, STORE_INTERVAL);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        StorageManager.getInstance().updateOrders(new Date(System.currentTimeMillis()), orderList);
+        StorageManager.getInstance().onUpdate(this);
     }
 
     private void initOrderList() {
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
-        orderList.add(new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                Arrays.asList(new Cake(), new Cake("盒子蛋糕"), new Cake(), new Cake(), new Cake(), new Cake())));
+        orderList = StorageManager.getInstance().getOrders(this, new Date(System.currentTimeMillis()));
     }
 
     private void initListView() {
@@ -88,7 +80,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void initSortHeader() {
+    private Calendar calendar = null;
+
+    private void initHeaders() {
         OrderAdapter adapter = (OrderAdapter) listView.getAdapter();
         findViewById(R.id.header_mode).setOnClickListener(v -> adapter.sort("mode"));
         findViewById(R.id.header_targetTime).setOnClickListener(v -> adapter.sort("targetTime"));
@@ -96,6 +90,22 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.header_price).setOnClickListener(v -> adapter.sort("price"));
         findViewById(R.id.header_payState).setOnClickListener(v -> adapter.sort("payState"));
         findViewById(R.id.header_progress).setOnClickListener(v -> adapter.sort("progress"));
+        TextView datePicker = findViewById(R.id.datePicker);
+        datePicker.setOnClickListener(v -> {
+            if (calendar == null) {
+                calendar = Calendar.getInstance();
+                calendar.setTime(new Date(System.currentTimeMillis()));
+            }
+            new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
+                datePicker.setText(String.format("%s月%s日", monthOfYear + 1, dayOfMonth));
+                this.calendar.set(year, monthOfYear, dayOfMonth);
+                Calendar cal = Calendar.getInstance();
+                cal.set(Calendar.YEAR, year);
+                cal.set(Calendar.MONTH, monthOfYear);
+                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                ((OrderAdapter) listView.getAdapter()).updateOrderList(StorageManager.getInstance().getOrders(this, cal), true);
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+        });
     }
 
     @Override
@@ -107,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             Pair<Integer, List<Cake>> args = Utils.decodeCakesWithOrderId(data);
             ((OrderAdapter) listView.getAdapter()).updateItemCakes(args.first, args.second);
         }
+        StorageManager.getInstance().updateOrders(new Date(System.currentTimeMillis()), orderList);
     }
 
     public ListView getListView() {

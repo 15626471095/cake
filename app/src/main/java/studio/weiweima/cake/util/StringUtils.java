@@ -1,8 +1,6 @@
 package studio.weiweima.cake.util;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import studio.weiweima.cake.external.Json;
@@ -21,6 +19,10 @@ public final class StringUtils {
             return replace;
         }
         return target;
+    }
+
+    public static List<String> toStringList(List<Object> objects) {
+        return objects.stream().map(Object::toString).collect(Collectors.toList());
     }
 
     public static String toString(List<? extends Object> list) {
