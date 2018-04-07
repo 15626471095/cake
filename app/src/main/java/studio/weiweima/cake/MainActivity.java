@@ -80,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private Calendar calendar = null;
-
     private void initHeaders() {
         OrderAdapter adapter = (OrderAdapter) listView.getAdapter();
         findViewById(R.id.header_mode).setOnClickListener(v -> adapter.sort("mode"));
@@ -91,33 +89,30 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.header_payState).setOnClickListener(v -> adapter.sort("payState"));
         findViewById(R.id.header_progress).setOnClickListener(v -> adapter.sort("progress"));
         TextView datePicker = findViewById(R.id.datePicker);
+        datePicker.setText(String.format("%s月%s日", adapter.getCalendar().get(Calendar.MONTH) + 1, adapter.getCalendar().get(Calendar.DAY_OF_MONTH)));
         datePicker.setOnClickListener(v -> {
-            if (calendar == null) {
-                calendar = Calendar.getInstance();
-                calendar.setTime(new Date(System.currentTimeMillis()));
-            }
             new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
                 datePicker.setText(String.format("%s月%s日", monthOfYear + 1, dayOfMonth));
-                this.calendar.set(year, monthOfYear, dayOfMonth);
-                Calendar cal = Calendar.getInstance();
-                cal.set(Calendar.YEAR, year);
-                cal.set(Calendar.MONTH, monthOfYear);
-                cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                ((OrderAdapter) listView.getAdapter()).updateOrderList(StorageManager.getInstance().getOrders(this, cal), true);
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+                adapter.getCalendar().set(year, monthOfYear, dayOfMonth);
+                ((OrderAdapter) listView.getAdapter()).updateOrderList(StorageManager.getInstance().getOrders(this, adapter.getCalendar()), true);
+                StorageManager.getInstance().onUpdate(this);
+            }, adapter.getCalendar().get(Calendar.YEAR),
+                    adapter.getCalendar().get(Calendar.MONTH),
+                    adapter.getCalendar().get(Calendar.DAY_OF_MONTH)).show();
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        OrderAdapter adapter = (OrderAdapter) listView.getAdapter();
         if (requestCode == RequestCode.EDIT_ORDER && resultCode == RESULT_OK) {
             Order order = Utils.decodeOrder(data);
-            ((OrderAdapter) listView.getAdapter()).updateItem(order);
+            adapter.updateItem(order);
         } else if (requestCode == RequestCode.EDIT_CAKES && resultCode == RESULT_OK) {
             Pair<Integer, List<Cake>> args = Utils.decodeCakesWithOrderId(data);
-            ((OrderAdapter) listView.getAdapter()).updateItemCakes(args.first, args.second);
+            adapter.updateItemCakes(args.first, args.second);
         }
-        StorageManager.getInstance().updateOrders(new Date(System.currentTimeMillis()), orderList);
+        StorageManager.getInstance().updateOrders(adapter.getCalendar(), orderList);
     }
 
     public ListView getListView() {

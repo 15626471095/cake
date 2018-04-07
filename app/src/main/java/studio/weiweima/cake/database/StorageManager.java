@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,7 +73,7 @@ public final class StorageManager {
 
     public List<Object> getAsList(Context context, String key, List<String> defaultList) {
         String content = StringUtils.wrap(get(context, key), "[]");
-        Set<Object> arrays = new JsonArray(content).stream().collect(Collectors.toSet());
+        LinkedHashSet<Object> arrays = new JsonArray(content).stream().collect(Collectors.toCollection(LinkedHashSet::new));
         int dbSize = arrays.size();
         arrays.addAll(defaultList);
         if (dbSize != arrays.size()) {
@@ -92,7 +93,7 @@ public final class StorageManager {
      * Cake Weight
      */
     public static final String WEIGHT = "weight.db";
-    private List<String> defaultWeights = Arrays.asList("四寸", "1磅", "1.5磅", "2磅", "3磅", "4磅", "5磅", "6磅", "7磅");
+    private List<String> defaultWeights = Arrays.asList("四寸", "1磅", "1.5磅", "2磅", "3磅", "4磅", "5磅", "6磅", "7磅", "其他");
 
     public List<String> getWeights(Context context) {
         return StringUtils.toStringList(getAsList(context, WEIGHT, defaultWeights));
@@ -106,7 +107,7 @@ public final class StorageManager {
      * Cake taste
      */
     public static final String TASTE = "taste.db";
-    private List<String> defaultTastes = Arrays.asList("芒果", "草莓", "杂果", "榴莲", "栗子", "咸奶油", "慕斯", "海盐红丝绒", "巧克力", "抹茶");
+    private List<String> defaultTastes = Arrays.asList("芒果", "杂果", "草莓", "栗子", "奥利奥", "榴莲", "芝士夹心水果", "抹茶夹心蜜豆", "巧克力夹心水果", "巧克力夹心奥利奥", "海盐红丝绒", "慕斯", "抹茶");
 
     public List<String> getTastes(Context context) {
         return StringUtils.toStringList(getAsList(context, TASTE, defaultTastes));

@@ -15,6 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,7 @@ import studio.weiweima.cake.bean.Cake;
 import studio.weiweima.cake.bean.Order;
 import studio.weiweima.cake.bean.Progress;
 import studio.weiweima.cake.bean.RequestCode;
+import studio.weiweima.cake.database.StorageManager;
 import studio.weiweima.cake.util.BitmapCache;
 import studio.weiweima.cake.util.DialogUtils;
 import studio.weiweima.cake.util.StringUtils;
@@ -37,6 +40,7 @@ public class OrderAdapter extends ArrayAdapter {
 
     private List<Order> orderList;
     private Map<Integer, Order> orderMap = new HashMap<>();
+    private Calendar calendar;
 
 
     public OrderAdapter(MainActivity mainActivity, int resourceId, List<Order> orderList) {
@@ -44,6 +48,18 @@ public class OrderAdapter extends ArrayAdapter {
         this.mainActivity = mainActivity;
         this.resourceId = resourceId;
         updateOrderList(orderList, false);
+    }
+
+    public Calendar getCalendar() {
+        if (calendar == null) {
+            calendar = Calendar.getInstance();
+            calendar.setTime(new Date(System.currentTimeMillis()));
+        }
+        return calendar;
+    }
+
+    public void setCalendar(Calendar calendar) {
+        this.calendar = calendar;
     }
 
     public void updateOrderList(List<Order> orders, boolean notify) {
@@ -166,6 +182,7 @@ public class OrderAdapter extends ArrayAdapter {
         Order order = orderList.remove(position);
         orderMap.remove(order.getId());
         assert orderMap.size() == orderList.size();
+        StorageManager.getInstance().updateOrders(calendar, orderList);
         notifyDataSetChanged();
     }
 
