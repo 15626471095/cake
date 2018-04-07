@@ -18,7 +18,7 @@ import studio.weiweima.cake.MainActivity;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Order {
 
-    private static final DateFormat format = new SimpleDateFormat("hh:mm", Locale.CHINA);
+    public static final DateFormat format = new SimpleDateFormat("HH:mm", Locale.CHINA);
     private static Random random = new Random(System.currentTimeMillis());
 
     private int id;

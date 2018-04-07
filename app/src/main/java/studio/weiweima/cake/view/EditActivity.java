@@ -130,9 +130,10 @@ public class EditActivity extends AppCompatActivity {
     private void set() {
         order = Utils.decodeOrder(getIntent());
         if (order == null) {
-            order = new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
-                    "北栅", "200", PayState.Alipay, Progress.ToDistribute,
-                    Collections.singletonList(new Cake()));
+//            order = new Order("陈小姐", "15626471095", Mode.Self, "生日快乐",
+//                    "北栅", "200", PayState.Alipay, Progress.ToDistribute,
+//                    Collections.singletonList(new Cake()));
+            order = new Order();
         }
         ((TextInputEditText) findViewById(R.id.name)).setText(order.getName());
         ((TextInputEditText) findViewById(R.id.phone)).setText(order.getPhone());
@@ -152,7 +153,7 @@ public class EditActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.targetDate))
                 .setText(String.format("%s月%s日", calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH)));
         ((TextView) findViewById(R.id.targetTime))
-                .setText(String.format("%s:%s", calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)));
+                .setText(Order.format.format(calendar.getTime()));
     }
 
     private boolean update() {
